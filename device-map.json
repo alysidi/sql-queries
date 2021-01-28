@@ -1,0 +1,31 @@
+{
+  "siteId": "375d422f-76a8-44a3-b659-87e4f3cf162f",
+  "timezone": "America/Los_Angeles",
+  "systems": [
+    {
+      "systemId": "1f40cc4b-4a93-475e-8b81-e54a62d0cfe3",
+      "serialNumber": "X7602-03166",
+      "statusName": "SUCCESS",
+      "updatedAt": "2020-12-11T02:04:06Z",
+      "battery": {
+        "statusName": "SUCCESS",
+        "unhealthyDeviceCount": 0
+      },
+      "pvl": {
+        "statusName": "SUCCESS",
+        "unhealthyDeviceCount": 0
+      },
+      "inverter": {
+        "statusCode": 2080,
+        "statusType": "GRID_CONNECTED",
+        "statusName": "GRID_CONNECTED"
+      },
+      "sysMode": {
+        "mode": "3",
+        "modeName": "Clean Backup",
+        "success": true
+      },
+      "pikaSystemId": "cf037786-bf2c-4165-a847-419a3d36c115"
+    }
+  ]
+}
