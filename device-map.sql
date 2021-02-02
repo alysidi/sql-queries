@@ -11,6 +11,8 @@ WITH data AS
      JOIN unnest(ARRAY[ '000100072DAB', '000100071818', '000100072021', 
       '0001000712E6', '000100072E46', '0001000705DB', '000100070B1E' ]) 
      host ON host_rcpn = host )
+     -- every single device
+     -- JOIN (select distinct host_rcpn from status.device_shadow ) as inverters ON ds.host_rcpn = inverters.host_rcpn
 
 
 SELECT

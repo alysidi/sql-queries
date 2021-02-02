@@ -1008,7 +1008,7 @@ CROSS JOIN LATERAL (
  select device_id, min_soc, avg_soc, max_soc, day,
   lag(day) over (order by day) yesterday 
   from status.legacy_status_daily    
-  where day > NOW()-INTERVAL '2 day'
+  where day >= date_trunc('day',NOW())-INTERVAL '2 day'
   and device_id = p.device_id
   order by day desc
   limit 1
@@ -1016,19 +1016,19 @@ CROSS JOIN LATERAL (
 
 
 CROSS JOIN LATERAL (
- select device_id, min_soc, avg_soc, max_soc, month
-  from status.legacy_status_monthly    
-  where month > NOW()-INTERVAL '1 month'
+ select device_id, min_soc, avg_soc, max_soc, month,
+ lag(month) over(order by month) as last_month
+  from status.legacy_status_monthly_materialized 
+  where month >= date_trunc('month',NOW())-INTERVAL '2 months'
   and device_id = p.host_rcpn
   order by month desc
   limit 1
 ) t2
 
-
 CROSS JOIN LATERAL (
   select device_id, total_whin, total_whout, avg_w, day 
   from status.battery_status_daily
-  where day > NOW()-INTERVAL '1 day'
+  where day >= date_trunc('day',NOW())-INTERVAL '2 day'
   and device_id = p.device_id
   order by day desc
   limit 1
