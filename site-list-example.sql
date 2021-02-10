@@ -47,8 +47,13 @@ CROSS JOIN LATERAL (
   limit 1
 ) monthly
 
-WHERE parent.solar > 0 AND daily.avg_soc > 5000
+-- filter by solar / storage
+WHERE parent.solar > 0 
+-- group on site_id from tuples passed in
 GROUP BY parent.site_id
+-- sort on 1 to n columns
+ORDER BY daily_avg_soc DESC, parent.site_id
+-- paging
 LIMIT 50 OFFSET 0
 
 
