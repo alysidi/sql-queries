@@ -21,23 +21,24 @@ FROM (
  ('site2','system4','00010007280A'),
  ('site3','system5','00010007046F')
     ) as tuples(site_id, system_id, host_rcpn) on ds.device_id=tuples.host_rcpn and ds.host_rcpn=tuples.host_rcpn
+
 ) as parent
 
 -- join to daily table
-CROSS JOIN LATERAL (
+LEFT JOIN LATERAL (
  SELECT device_id, min_soc, avg_soc, max_soc, day,
   lag(day) over (order by day) yesterday,
   lag(max_soc) over (order by day) yesterday_max_soc
   FROM status.legacy_status_daily    
   WHERE day >= date_trunc('day',NOW())-INTERVAL '1 day'
-  AND device_id = parent.device_id
+  AND device_id = parent.device_id 
   ORDER BY day desc
   LIMIT 1
-) as daily
+) as daily ON true
 
 
 -- repeat lateral join for monthly, yearly
-CROSS JOIN LATERAL (
+LEFT JOIN LATERAL (
  select device_id, min_soc, avg_soc, max_soc, month,
  lag(month) over(order by month) as last_month
   from status.legacy_status_monthly_materialized 
@@ -45,14 +46,14 @@ CROSS JOIN LATERAL (
   and device_id = parent.device_id
   order by month desc
   limit 1
-) monthly
+) monthly ON true
 
 -- filter by solar / storage
 WHERE parent.solar > 0 
 -- group on site_id from tuples passed in
 GROUP BY parent.site_id
 -- sort on 1 to n columns
-ORDER BY daily_avg_soc DESC, parent.site_id
+ORDER BY daily_avg_soc DESC
 -- paging
 LIMIT 50 OFFSET 0
 
