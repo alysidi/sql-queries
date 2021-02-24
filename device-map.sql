@@ -1,29 +1,27 @@
-
 \timing
 -- individual inverters -> get device map for all devices
 WITH data AS
-    (SELECT device_id,
-            host_rcpn,
-            st,
-            device_type,
-            timestamp_utc
-     FROM status.device_shadow ds
-     JOIN unnest(ARRAY[ '000100072DAB', '000100071818', '000100072021', 
-      '0001000712E6', '000100072E46', '0001000705DB', '000100070B1E' ]) 
-     host ON host_rcpn = host )
-     -- every single device
-     -- JOIN (select distinct host_rcpn from status.device_shadow ) as inverters ON ds.host_rcpn = inverters.host_rcpn
-
+    ( 
+        SELECT device_id, host_rcpn, device_type
+        FROM status.ess_device_info
+        JOIN unnest(ARRAY[ '000100073466', '000100071818' ]) 
+           host ON host_rcpn = host 
+        UNION
+        SELECT device_id, host_rcpn, device_type
+        FROM status.device_shadow
+        JOIN unnest(ARRAY[ '000100073466', '000100071818' ]) 
+           host ON host_rcpn = host 
+      )
 
 SELECT
     (SELECT min(created_timestamp_utc)
      FROM status.ess_device_info
      WHERE device_id=d.device_id
          AND host_rcpn=d.host_rcpn ) AS first_update,
-       d.timestamp_utc AS last_heard,
+       s.timestamp_utc AS last_heard,
        d.device_id,   
        d.host_rcpn,
-       d.st,
+       s.st,
        r.state_text,
        d.device_type,
        e.manufacturer,
@@ -33,11 +31,13 @@ SELECT
        n.nameplate
 -- 3 joins      
 FROM DATA d
--- mask the last 4 bits as it denotes device type
-LEFT JOIN status.rcp_state r ON left(to_hex(d.st)::text, -1) || 0 = to_hex(r.state_code)
+
 -- get ess device meta data
-LEFT JOIN status.ess_device_info e ON d.host_rcpn=e.host_rcpn
-AND d.device_id=e.device_id
+LEFT JOIN status.ess_device_info e ON d.host_rcpn=e.host_rcpn AND d.device_id=e.device_id
+-- get shadow data
+LEFT JOIN status.device_shadow s ON d.host_rcpn=s.host_rcpn AND d.device_id=s.device_id
+-- mask the last 4 bits as it denotes device type
+LEFT JOIN status.rcp_state r ON left(to_hex(s.st)::text, -1) || 0 = to_hex(r.state_code)
 -- get any nameplates
 LEFT JOIN status.nameplate n ON d.device_id = n.device_id
 -- latest row from ess_device_info
@@ -53,6 +53,4 @@ AND (n.created_timestamp_utc=
           FROM status.nameplate
           WHERE device_id=d.device_id)
      OR n.created_timestamp_utc IS NULL)  
-
-
 

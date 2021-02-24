@@ -1,0 +1,71 @@
+{
+  "page": 1,
+  "perPage": 10,
+  "total": 2,
+  "data": [
+    {
+      "siteId": "375d422f-76a8-44a3-b659-87e4f3cf162f",
+      "siteName": "107 Iron Gate",
+      "siteAddress": {
+        "city": "Irvine",
+        "state": "CA",
+        "country": "US",
+        "latitude": 33.662272,
+        "longitude": -117.74341,
+        "streetAddress": "107 Iron Gate",
+        "zip": "92618-4836"
+      },
+      "timezone": "America/Los_Angeles",
+      "status": "ONLINE",
+      "capability": [
+        "inverter",
+        "battery",
+        "pvl"
+      ],
+      "soc": 93.1,
+      "soh": 0.0,
+      "installedPV": 11.47,
+      "installedStorage": 11.4,
+      "updateDate": "2020-11-12T18:24:52.388-08:00",
+      "installedDate": "2020-10-09T13:18:09.239-07:00",
+      "aggregateMetrics": {
+        "selfConsumptionToday": 21.5,
+        "selfConsumptionYesterday": 93.1,
+        "selfConsumptionMonth": 91.1,
+        "selfConsumptionYear": 91.3
+      },
+      "highestSeverityAlert": {
+        "updateDate": 0,
+        "triggeredDate": 0
+      },
+      "generation": {
+        "performanceToday": 0.014,
+        "performanceYesterday": 1.582,
+        "performanceRatioThisMonth": 0.0,
+        "performanceRatioLastMonth": 0.0,
+        "avgPerformanceThisMonth": 2.597,
+        "avgPerformanceLastMonth": 2.909,
+        "avgPerformanceThisYear": 2.837,
+        "avgPerformanceLastYear": 0.37,
+        "yieldToday": 0.163,
+        "yieldYesterday": 18.151,
+        "yieldLastMonth": 1034.31,
+        "yieldThisMonth": 277.572,
+        "yieldThisYear": 1311.882
+      },
+      "consumption": {
+        "consumptionToday": 26.927,
+        "consumptionYesterday": 90.284,
+        "consumptionThisMonth": 876.849,
+        "consumptionLastMonth": 3510.489,
+        "consumptionThisYear": 4386.617
+      },
+      "contact": {
+        "name": "YY ZZ",
+        "email": "zzzzzz@gmail.com"
+      }
+    }
+  ]
+}
+
+\d+ pwr.system_energy_hourly

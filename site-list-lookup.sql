@@ -45,5 +45,5 @@ CROSS JOIN LATERAL (
 
 -- where p.error=1 
 -- order by t3.total_whin DESC
-limit 50 offset 0;
+limit 50 offset 200;
 

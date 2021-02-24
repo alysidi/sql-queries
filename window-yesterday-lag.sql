@@ -1,4 +1,10 @@
 
+select f,
+percent_rank() over(order by f),
+cume_dist() over(order by f)
+ from 
+(VALUES(1000),(1200),(1200),(1400),(2000),(4000),(6000)) f
+
 \timing
 with data as (
  SELECT DISTINCT ON (device_id) device_id, day, last_st,
