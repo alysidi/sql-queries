@@ -4,12 +4,12 @@ WITH data AS
     ( 
         SELECT device_id, host_rcpn, device_type
         FROM status.ess_device_info
-        JOIN unnest(ARRAY[ '000100073466', '000100071818' ]) 
+        JOIN unnest(ARRAY['0001000720D0','000100071818']) 
            host ON host_rcpn = host 
         UNION
         SELECT device_id, host_rcpn, device_type
         FROM status.device_shadow
-        JOIN unnest(ARRAY[ '000100073466', '000100071818' ]) 
+        JOIN unnest(ARRAY['0001000720D0','000100071818']) 
            host ON host_rcpn = host 
       )
 
@@ -41,16 +41,18 @@ LEFT JOIN status.rcp_state r ON left(to_hex(s.st)::text, -1) || 0 = to_hex(r.sta
 -- get any nameplates
 LEFT JOIN status.nameplate n ON d.device_id = n.device_id
 -- latest row from ess_device_info
-WHERE (e.created_timestamp_utc=
-           (SELECT max(created_timestamp_utc)
+WHERE (e.updated_timestamp_utc=
+           (SELECT max(updated_timestamp_utc)
             FROM status.ess_device_info
             WHERE device_id=d.device_id
                 AND host_rcpn=d.host_rcpn)
-       OR e.created_timestamp_utc IS NULL) 
+       OR e.updated_timestamp_utc IS NULL) 
 -- latest row from nameplates
-AND (n.created_timestamp_utc=
-         (SELECT max(created_timestamp_utc)
+AND (n.updated_timestamp_utc=
+         (SELECT max(updated_timestamp_utc)
           FROM status.nameplate
           WHERE device_id=d.device_id)
-     OR n.created_timestamp_utc IS NULL)  
+     OR n.updated_timestamp_utc IS NULL)  
 
+
+--select * from status.ess_device_info where device_id='00010003A2DA'
