@@ -4,12 +4,12 @@ WITH data AS
     ( 
         SELECT device_id, host_rcpn, device_type
         FROM status.ess_device_info
-        JOIN unnest(ARRAY['0001000720D0','000100071818']) 
+        JOIN unnest(ARRAY['0001000720D0','000100071818', '000100073643']) 
            host ON host_rcpn = host 
         UNION
         SELECT device_id, host_rcpn, device_type
         FROM status.device_shadow
-        JOIN unnest(ARRAY['0001000720D0','000100071818']) 
+        JOIN unnest(ARRAY['0001000720D0','000100071818', '000100073643']) 
            host ON host_rcpn = host 
       )
 
