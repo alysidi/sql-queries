@@ -4,13 +4,13 @@ WITH data AS
     ( 
         SELECT device_id, host_rcpn, device_type
         FROM status.ess_device_info
-        JOIN unnest(ARRAY['0001000720D0','000100071818', '000100073643']) 
-           host ON host_rcpn = host 
+        WHERE host_rcpn IN ('0001000720D0','000100071818', '000100073643') 
+          
         UNION
         SELECT device_id, host_rcpn, device_type
         FROM status.device_shadow
-        JOIN unnest(ARRAY['0001000720D0','000100071818', '000100073643']) 
-           host ON host_rcpn = host 
+        WHERE host_rcpn IN ('0001000720D0','000100071818', '000100073643') 
+         
       )
 
 SELECT
@@ -55,4 +55,3 @@ AND (n.updated_timestamp_utc=
      OR n.updated_timestamp_utc IS NULL)  
 
 
---select * from status.ess_device_info where device_id='00010003A2DA'
