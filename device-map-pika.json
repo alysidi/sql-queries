@@ -1,0 +1,183 @@
+{
+  "pvls": [
+    {
+      "id": "000100030CB2",
+      "last_update": 1598966209,
+      "first_update": 1597899374
+    },
+    {
+      "id": "000100030C54",
+      "last_update": 1579370636,
+      "first_update": 1578430593
+    },
+    {
+      "id": "000100030CB7",
+      "last_update": 1579370639,
+      "first_update": 1578430645
+    },
+    {
+      "id": "000100030C20",
+      "last_update": 1579370636,
+      "first_update": 1578430646
+    },
+    {
+      "id": "000100030C1F",
+      "last_update": 1579370638,
+      "first_update": 1578430645
+    },
+    {
+      "id": "000100030CCE",
+      "last_update": 1579370635,
+      "first_update": 1578430645
+    },
+    {
+      "w_rtg": 2500,
+      "a_rtg": 13,
+      "id": "000100035706",
+      "manufacturer": "Pika",
+      "name": "PV Link",
+      "version": "634_13550",
+      "last_update": 1616424929,
+      "first_update": 1599056230,
+      "last_common": 1616271030,
+      "last_nameplate": 1616389847
+    },
+    {
+      "w_rtg": 2500,
+      "a_rtg": 13,
+      "id": "0001000355F4",
+      "manufacturer": "Pika",
+      "name": "PV Link",
+      "version": "634_13550",
+      "last_update": 1616424933,
+      "first_update": 1599056229,
+      "last_common": 1616271029,
+      "last_nameplate": 1616389846
+    },
+    {
+      "w_rtg": 2500,
+      "a_rtg": 13,
+      "id": "000100035928",
+      "manufacturer": "Pika",
+      "name": "PV Link",
+      "version": "634_13550",
+      "last_update": 1616424929,
+      "first_update": 1599056229,
+      "last_common": 1616271031,
+      "last_nameplate": 1616389848
+    },
+    {
+      "w_rtg": 2500,
+      "a_rtg": 13,
+      "id": "000100035757",
+      "manufacturer": "Pika",
+      "name": "PV Link",
+      "version": "634_13550",
+      "last_update": 1616424931,
+      "first_update": 1599056230,
+      "last_common": 1616271030,
+      "last_nameplate": 1616389847
+    },
+    {
+      "w_rtg": 2500,
+      "a_rtg": 13,
+      "id": "0001000356AC",
+      "manufacturer": "Pika",
+      "name": "PV Link",
+      "version": "634_13550",
+      "last_update": 1616424931,
+      "first_update": 1599056229,
+      "last_common": 1616271029,
+      "last_nameplate": 1616389846
+    },
+    {
+      "id": "00010003A2DA"
+    }
+  ],
+  "inverters": [
+    {
+      "id": "0001000705AE",
+      "last_update": 1579530196,
+      "first_update": 1578430586
+    },
+    {
+      "id": "0001000705BD",
+      "last_update": 1578431997,
+      "first_update": 1578431937
+    },
+    {
+      "w_rtg": 7600,
+      "a_rtg": 32,
+      "va_rtg": 7600,
+      "id": "0001000720D0",
+      "serial_number": "X7602-01696",
+      "manufacturer": "Generac",
+      "name": "PWRcell X7602 Inverter",
+      "version": "1002_13590",
+      "last_update": 1616424933,
+      "first_update": 1599012471,
+      "last_common": 1616271028,
+      "last_nameplate": 1616389840
+    }
+  ],
+  "batteries": [
+    {
+      "ah_rtg": 60.9,
+      "wh_rtg": 17100,
+      "w_cha_max": 9828,
+      "w_discha_max": 9828,
+      "soc_max": 100,
+      "soc_min": 2,
+      "soc_rsv_max": 100,
+      "soc_rsv_min": 20,
+      "id": "0001000805A4",
+      "manufacturer": "Pika",
+      "name": "Smart Battery",
+      "version": "1217_12751",
+      "last_update": 1616424871,
+      "first_update": 1597899375,
+      "last_common": 1616271027,
+      "last_nameplate": 1616389842
+    },
+    {
+      "ah_rtg": 60.9,
+      "wh_rtg": 8550,
+      "w_cha_max": 4914,
+      "w_discha_max": 4914,
+      "soc_max": 100,
+      "soc_min": 2,
+      "soc_rsv_max": 100,
+      "soc_rsv_min": 20,
+      "id": "000100081AF3",
+      "manufacturer": "Generac",
+      "name": "PWRcell Battery",
+      "version": "12171_12751",
+      "last_update": 1616424871,
+      "first_update": 1597899378,
+      "last_common": 1616271028,
+      "last_nameplate": 1616389843
+    }
+  ],
+  "beacons": [
+    {
+      "id": "000100120268",
+      "manufacturer": "Generac",
+      "name": "REbus Beacon",
+      "version": "patch.20210128",
+      "last_update": 1616424933,
+      "first_update": 1578430620,
+      "last_common": 1616271027
+    }
+  ],
+  "icms": [
+    {
+      "id": "000100000891",
+      "manufacturer": "Generac",
+      "name": "ICM",
+      "version": "324_12301",
+      "last_update": 1616424929,
+      "first_update": 1597899374,
+      "last_common": 1616271031
+    }
+  ]
+}

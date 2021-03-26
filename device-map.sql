@@ -41,17 +41,17 @@ LEFT JOIN status.rcp_state r ON left(to_hex(s.st)::text, -1) || 0 = to_hex(r.sta
 -- get any nameplates
 LEFT JOIN status.nameplate n ON d.device_id = n.device_id
 -- latest row from ess_device_info
-WHERE (e.updated_timestamp_utc=
-           (SELECT max(updated_timestamp_utc)
+WHERE (e.timestamp_utc=
+           (SELECT max(timestamp_utc)
             FROM status.ess_device_info
             WHERE device_id=d.device_id
                 AND host_rcpn=d.host_rcpn)
-       OR e.updated_timestamp_utc IS NULL) 
+       OR e.timestamp_utc IS NULL) 
 -- latest row from nameplates
-AND (n.updated_timestamp_utc=
-         (SELECT max(updated_timestamp_utc)
+AND (n.timestamp_utc=
+         (SELECT max(timestamp_utc)
           FROM status.nameplate
           WHERE device_id=d.device_id)
-     OR n.updated_timestamp_utc IS NULL)  
+     OR n.timestamp_utc IS NULL)  
 
 
