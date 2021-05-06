@@ -8,7 +8,7 @@ WITH data AS
             ds.device_type,
             ds.timestamp_utc
      FROM status.device_shadow ds
-     JOIN (select distinct host_rcpn from status.device_shadow ) as inverters ON ds.host_rcpn = inverters.host_rcpn
+     JOIN (select distinct host_rcpn from status.device_shadow where device_type='INVERTER' ) as inverters ON ds.host_rcpn = inverters.host_rcpn
       )
     
 

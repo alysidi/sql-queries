@@ -1,6 +1,6 @@
 
 select f,
-percent_rank() over(order by f),
+1-percent_rank() over(order by f),
 cume_dist() over(order by f)
  from 
 (VALUES(1000),(1200),(1200),(1400),(2000),(4000),(6000)) f
