@@ -1,3 +1,4 @@
+\timing
 with inverters as (
   select distinct host_rcpn from status.device_shadow where device_type='INVERTER'
 ),
@@ -22,6 +23,11 @@ where cnt > 10
 group by device_id,cnt
 order by cnt desc
 
+SELECT coalesce(role.rolname, 'database wide') as role, 
+       coalesce(db.datname, 'cluster wide') as database, 
+       setconfig as what_changed
+FROM pg_db_role_setting role_setting
+LEFT JOIN pg_roles role ON role.oid = role_setting.setrole
+LEFT JOIN pg_database db ON db.oid = role_setting.setdatabase;
 
-
-
+\du+
