@@ -19,7 +19,7 @@ order by timestamp_utc desc;
 -- get state change events by time period by device
 select timestamp_utc, timestamp_utc - lag(timestamp_utc) OVER (PARTITION BY device_id ORDER BY timestamp_utc) as duration,
  st, to_hex(st), state_text from status.legacy_status_state_change l LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
-where device_id='000100034FEB' 
+where device_id='000100034E29' 
 and timestamp_utc > NOW() - INTERVAL '7 days'
 and st between x'7000'::int and x'7FFF'::int
 order by timestamp_utc desc;
@@ -27,21 +27,22 @@ order by timestamp_utc desc;
 -- get state change events from specific day by device
 select timestamp_utc, timestamp_utc - lag(timestamp_utc) OVER (PARTITION BY device_id ORDER BY timestamp_utc) as duration,
 st, state_text from status.legacy_status_state_change l LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
-where device_id='000100034FEB' 
+where device_id='000100034E29' 
 and date_trunc('day',timestamp_utc) = '2021-05-29'
 order by timestamp_utc desc limit 500;
 
 -- get last 500 events from specific device 
 select now();
+
 select timestamp_utc, timestamp_utc - lag(timestamp_utc) OVER (PARTITION BY device_id ORDER BY timestamp_utc) as duration,
 st, state_text from status.legacy_status l LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
-where device_id='000100034FEB' 
+where device_id='000100082F33' 
 order by timestamp_utc desc limit 500;
 
 -- current state of device
 select * from status.device_shadow d 
 LEFT JOIN status.rcp_state r ON d.st & x'FFF0'::int = r.state_code 
-where device_id='000100034FEB';
+where device_id='000100082F33';
 
 
 -- 000100035AE4 arc fault lockout PVL - persistent
