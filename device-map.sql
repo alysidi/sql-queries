@@ -1,12 +1,14 @@
-\timing
+--\timing
 -- individual inverters -> get device map for all devices
 WITH data AS
     ( 
         SELECT device_id, host_rcpn, device_type
         FROM status.ess_device_info
         WHERE host_rcpn IN ('0001000720D0','000100071818', '000100073643') 
-          
+        AND NOT is_soft_deleted 
+
         UNION
+
         SELECT device_id, host_rcpn, device_type
         FROM status.device_shadow
         WHERE host_rcpn IN ('0001000720D0','000100071818', '000100073643') 

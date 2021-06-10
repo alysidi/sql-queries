@@ -7,7 +7,7 @@ WITH select_devices AS (
 	-- 00010003095F
 	-- 00010007238F
   ORDER by timestamp_utc desc
-  LIMIT 10000  -- TODO: limit is for testing only, remove later - need to batch 
+  LIMIT 5000  -- TODO: limit is for testing only, remove later - need to batch 
 ),
 state_changes AS (
   SELECT
