@@ -1,0 +1,57 @@
+[
+  {
+    "deviceType": "inverter",
+    "systemId": "0b64b8ac-efac-4953-b1ca-6bf8ec482f9b",
+    "deviceRcpn": "000100074EEB",
+    "beaconRcpn": "0001001276B2",
+    "power": 500.0,
+    "energy": 467815.0,
+    "devices": {
+      "pvls": [
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003FAC5",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 525.0,
+          "energy": 168741.0,
+          "temperature": 46.4,
+          "voltage": 398.7
+        },
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003F8A3",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 573.0,
+          "energy": 185352.0,
+          "temperature": 41.1,
+          "voltage": 398.7
+        },
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003FB70",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 625.0,
+          "energy": 207586.0,
+          "temperature": 47.6,
+          "voltage": 398.6
+        }
+      ],
+      "batteryModules": [
+        {
+          "deviceType": "battery",
+          "deviceRcpn": "00010008499E",
+          "statusName": "charging",
+          "statusType": "charging",
+          "power": -1115.0,
+          "energy": 108535.0,
+          "temperature": 27.8,
+          "voltage": 398.6,
+          "soc": 35.3
+        }
+      ]
+    }
+  }
+]
