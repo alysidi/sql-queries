@@ -1,55 +1,108 @@
 [
   {
     "deviceType": "inverter",
-    "systemId": "0b64b8ac-efac-4953-b1ca-6bf8ec482f9b",
-    "deviceRcpn": "000100074EEB",
-    "beaconRcpn": "0001001276B2",
-    "power": 500.0,
-    "energy": 467815.0,
+    "systemId": "fdd8b2be-a142-4678-b779-e743e1ce6070",
+    "deviceRcpn": "00010007308B",
+    "beaconRcpn": "000100122750",
+    "power": 8.0,
+    "energy": 1231130.0,
     "devices": {
       "pvls": [
         {
           "deviceType": "pvl",
-          "deviceRcpn": "00010003FAC5",
-          "statusName": "making power",
-          "statusType": "making power",
-          "power": 525.0,
-          "energy": 168741.0,
-          "temperature": 46.4,
-          "voltage": 398.7
+          "deviceRcpn": "000100037F4D",
+          "statusName": "ground fault",
+          "statusType": "ground fault",
+          "power": 0.0,
+          "energy": 588257.0,
+          "temperature": 17.6,
+          "voltage": 314.8
         },
         {
           "deviceType": "pvl",
-          "deviceRcpn": "00010003F8A3",
+          "deviceRcpn": "0001000381D7",
+          "statusName": "low sun",
+          "statusType": "low sun",
+          "power": 0.0,
+          "energy": 851296.0,
+          "temperature": 17.7,
+          "voltage": 403.5
+        }
+      ],
+      "batteryModules": []
+    }
+  },
+  {
+    "deviceType": "inverter",
+    "systemId": "f38236ec-05de-4288-974d-fee698f68056",
+    "deviceRcpn": "000100072C31",
+    "beaconRcpn": "000100122142",
+    "power": 5936.0,
+    "energy": 3613783.0,
+    "devices": {
+      "pvls": [
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003BA89",
           "statusName": "making power",
           "statusType": "making power",
-          "power": 573.0,
-          "energy": 185352.0,
-          "temperature": 41.1,
-          "voltage": 398.7
+          "power": 1091.0,
+          "energy": 851754.0,
+          "temperature": 43.4,
+          "voltage": 420.4
         },
         {
           "deviceType": "pvl",
-          "deviceRcpn": "00010003FB70",
+          "deviceRcpn": "00010003B88D",
           "statusName": "making power",
           "statusType": "making power",
-          "power": 625.0,
-          "energy": 207586.0,
-          "temperature": 47.6,
-          "voltage": 398.6
+          "power": 1189.0,
+          "energy": 852611.0,
+          "temperature": 44.7,
+          "voltage": 420.0
+        },
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003BAF4",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 1416.0,
+          "energy": 821492.0,
+          "temperature": 44.9,
+          "voltage": 420.4
+        },
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003B920",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 1416.0,
+          "energy": 810544.0,
+          "temperature": 45.0,
+          "voltage": 420.5
+        },
+        {
+          "deviceType": "pvl",
+          "deviceRcpn": "00010003BA00",
+          "statusName": "making power",
+          "statusType": "making power",
+          "power": 922.0,
+          "energy": 709125.0,
+          "temperature": 45.0,
+          "voltage": 420.7
         }
       ],
       "batteryModules": [
         {
           "deviceType": "battery",
-          "deviceRcpn": "00010008499E",
-          "statusName": "charging",
-          "statusType": "charging",
-          "power": -1115.0,
-          "energy": 108535.0,
-          "temperature": 27.8,
-          "voltage": 398.6,
-          "soc": 35.3
+          "deviceRcpn": "00010008206D",
+          "statusName": "disabled",
+          "statusType": "disabled",
+          "power": 0.0,
+          "energy": 3198.0,
+          "temperature": 25.0,
+          "voltage": 420.4,
+          "soc": 0.0
         }
       ]
     }
