@@ -57,6 +57,7 @@ with postgres_pool.getconn() as conn:
 
       # template sql query with chunked tuples
       query = get_errors_query.format(tuples)
+      # print(query)
 
       # get output error batch -> send on for further processing
       df2 = pd.read_sql_query(query, conn)

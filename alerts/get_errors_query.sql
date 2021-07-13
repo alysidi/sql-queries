@@ -8,14 +8,14 @@ WITH state_changes AS
                                               host_rcpn, 
                                               timestamp_utc, 
                                               st AS device_state,
-                                              lead(st) OVER (partition BY device_id ORDER BY timestamp_utc ASC) AS next_state,
+                                              lag(st) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state,
                                               -- delta in hours between states. If no next state, use current time 
-                                              extract(epoch FROM ( COALESCE(lead(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc ASC), now()::timestamp) - timestamp_utc)) / 3600 AS delta_hours
+                                              extract(epoch FROM ( COALESCE(lag(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc DESC), now()::timestamp) - timestamp_utc)) / 3600 AS delta_hours
                                      FROM     status.legacy_status_state_change lssc 
-                                     WHERE    device_id = parent.device_id 
+                                     WHERE    device_id = parent.device_id --and host_rcpn = parent.host_rcpn
                                      AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
-                                              -- limit to states only 
-                                     AND     st between x'7000'::int and x'7FFF'::int ) p ) 
+                      
+                             ) p ) 
       SELECT   device_id, 
                last(host_rcpn, timestamp_utc) AS host_rcpn, 
                device_state, 
