@@ -1,8 +1,8 @@
 WITH state_changes AS 
       ( 
-                 SELECT     p.*
-                 --FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
-                 FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 SELECT     window_of_state_changes.*
+                 FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 --FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
                  CROSS JOIN lateral 
                             ( 
                                      SELECT   device_id, 
@@ -10,11 +10,10 @@ WITH state_changes AS
                                               timestamp_utc, 
                                               st
                                      FROM     status.legacy_status_state_change lssc 
-                                     WHERE    device_id = parent.device_id --and host_rcpn = parent.host_rcpn
+                                     WHERE    device_id = parent.device_id 
                                      AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
                     
-                             ) p 
-                 
+                             ) as window_of_state_changes    
         ),
 
         bad_states AS (
@@ -28,23 +27,24 @@ WITH state_changes AS
       SELECT * FROM  (
         SELECT   device_id,
                  host_rcpn, 
-                 timestamp_utc as last_heard,
-                 to_hex(st) as last_state
+                 'DEVICE_IN_FAULT_STATE' as alert_type,
+                 timestamp_utc as last_heard_timestamp_utc,
+                 to_hex(st) as latest_state_code
           
         FROM     status.device_shadow 
         WHERE device_id in (select distinct device_id from bad_states)
-        GROUP BY device_id, host_rcpn, st, last_heard
-      ) button
+        GROUP BY device_id, host_rcpn, latest_state_code, last_heard_timestamp_utc
+      ) parent
       
        CROSS JOIN LATERAL (
 
-                      select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num
+                      select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num_transitions_in_window
                       from (
                        select state, state_count
                         from bad_states
-                        where device_id=button.device_id
+                        where device_id = parent.device_id
                       ) t
-                  ) x
+                  ) as bad_state_counts
        CROSS JOIN LATERAL (
 
                       select json_build_object( 'history', json_agg(to_json(t))) as history
@@ -54,10 +54,10 @@ WITH state_changes AS
                         timestamp_utc,
                         lag(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state_timestamp
                         from status.legacy_status_state_change
-                        where device_id=button.device_id
+                        where device_id = parent.device_id
                         and timestamp_utc > now() - INTERVAL '30 minutes'
                         order by timestamp_utc desc
                         LIMIT 200
                       ) t
-                  ) z
+                  ) as history_of_state_changes
                 
