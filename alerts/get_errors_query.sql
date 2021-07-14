@@ -55,7 +55,7 @@ WITH state_changes AS
                         lag(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state_timestamp
                         from status.legacy_status_state_change
                         where device_id=button.device_id
-                        and timestamp_utc > now() - INTERVAL '30 days'
+                        and timestamp_utc > now() - INTERVAL '30 minutes'
                         order by timestamp_utc desc
                         LIMIT 200
                       ) t
