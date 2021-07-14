@@ -1,31 +1,65 @@
 WITH state_changes AS 
       ( 
-                 SELECT     p.* 
-                 FROM       (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 SELECT     p.*
+                 FROM (VALUES ('0001000823F0','00010007110F'),('000100082E80', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 --FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
                  CROSS JOIN lateral 
                             ( 
                                      SELECT   device_id, 
                                               host_rcpn, 
                                               timestamp_utc, 
-                                              st AS device_state,
-                                              lag(st) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state,
-                                              -- delta in hours between states. If no next state, use current time 
-                                              extract(epoch FROM ( COALESCE(lag(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc DESC), now()::timestamp) - timestamp_utc)) / 3600 AS delta_hours
+                                              st
                                      FROM     status.legacy_status_state_change lssc 
                                      WHERE    device_id = parent.device_id --and host_rcpn = parent.host_rcpn
                                      AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
-                      
-                             ) p ) 
-      SELECT   device_id, 
-               last(host_rcpn, timestamp_utc) AS host_rcpn, 
-               device_state, 
-               max(timestamp_utc)  AS last_event_utc, 
-               count(device_state) AS num_events, 
-               sum(delta_hours)    AS total_hours_error 
-      FROM     state_changes 
-      WHERE    device_state BETWEEN x'7000'::int AND x'7FFF'::int 
-      AND      ( 
-                        next_state != device_state 
-               OR       next_state IS NULL) 
-      GROUP BY device_id, 
-               device_state
+                    
+                             ) p 
+                 
+        ),
+
+        bad_states AS (
+                        select device_id, to_hex(st) as st, count(st)
+                        from state_changes
+                        where st BETWEEN x'7000'::int AND x'7FFF'::int 
+                        group by device_id, st
+
+          )
+
+
+      SELECT * FROM  (
+        SELECT   device_id,
+                 host_rcpn, 
+                 timestamp_utc as last_heard,
+                 to_hex(st) as last_state
+          
+        FROM     status.device_shadow 
+        WHERE device_id in (select distinct device_id from bad_states)
+        GROUP BY device_id, host_rcpn, st, last_heard
+      ) button
+      
+       CROSS JOIN LATERAL (
+
+                      select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num
+                      from (
+                        select st as state, count(st)
+                        from bad_states
+                        where device_id=button.device_id
+                        group by device_id, st
+                      ) t
+                  ) x
+       CROSS JOIN LATERAL (
+
+                      select json_build_object( 'history', json_agg(to_json(t))) as history
+                      from (
+                        select st as state,
+                        lag(st) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state,
+                        timestamp_utc,
+                        lag(timestamp_utc) OVER (partition BY device_id ORDER BY timestamp_utc DESC) AS next_state_timestamp
+                        from status.legacy_status_state_change
+                        where device_id=button.device_id
+                        and timestamp_utc > now() - INTERVAL '30 days'
+                        order by timestamp_utc desc
+                        LIMIT 200
+                      ) t
+                  ) z
+                

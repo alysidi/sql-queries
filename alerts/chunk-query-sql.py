@@ -44,7 +44,7 @@ with postgres_pool.getconn() as conn:
 
     # chunk settings
     total_device_shadow_devices = len(df);
-    chunk_size = int(total_device_shadow_devices * 0.05) # between 2.5% and 5% should be good for batching performance
+    chunk_size = int(total_device_shadow_devices * 0.025) # between 2.5% and 5% should be good for batching performance
     print("chunk size:",chunk_size, "total devices:", total_device_shadow_devices)
 
     # split dataframe into chunk for bulk inserts
