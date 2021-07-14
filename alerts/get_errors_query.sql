@@ -1,7 +1,7 @@
 WITH state_changes AS 
       ( 
                  SELECT     p.*
-                 FROM (VALUES ('0001000823F0','00010007110F'),('000100082E80', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
                  --FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
                  CROSS JOIN lateral 
                             ( 
@@ -18,11 +18,10 @@ WITH state_changes AS
         ),
 
         bad_states AS (
-                        select device_id, to_hex(st) as st, count(st)
+                        select device_id, to_hex(st) as state, count(st) as state_count
                         from state_changes
-                        where st BETWEEN x'7000'::int AND x'7FFF'::int 
+                        where st BETWEEN x'0000'::int AND x'FFFF'::int 
                         group by device_id, st
-
           )
 
 
@@ -41,10 +40,9 @@ WITH state_changes AS
 
                       select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num
                       from (
-                        select st as state, count(st)
+                       select state, state_count
                         from bad_states
                         where device_id=button.device_id
-                        group by device_id, st
                       ) t
                   ) x
        CROSS JOIN LATERAL (
