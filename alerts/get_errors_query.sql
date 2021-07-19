@@ -7,7 +7,8 @@ WITH state_changes AS
                             ( 
                                      SELECT   device_id, 
                                               host_rcpn, 
-                                              timestamp_utc, 
+                                              timestamp_utc,
+                                              device_type, 
                                               st
                                      FROM     status.legacy_status_state_change lssc 
                                      WHERE    device_id = parent.device_id 
@@ -27,13 +28,14 @@ WITH state_changes AS
       SELECT * FROM  (
         SELECT   device_id,
                  host_rcpn, 
+                 device_type,
                  'DEVICE_IN_ERROR_STATE' as alert_type,
                  timestamp_utc as last_heard_timestamp_utc,
                  to_hex(st) as latest_state
           
         FROM     status.device_shadow 
         WHERE device_id in (select distinct device_id from bad_states)
-        GROUP BY device_id, host_rcpn, latest_state, last_heard_timestamp_utc
+        GROUP BY device_id, host_rcpn, device_type, latest_state, last_heard_timestamp_utc
       ) parent
       
       CROSS JOIN LATERAL (
