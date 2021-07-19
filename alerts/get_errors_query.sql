@@ -11,31 +11,38 @@ WITH state_changes AS
                                               st
                                      FROM     status.legacy_status_state_change lssc 
                                      WHERE    device_id = parent.device_id 
-                                     AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
+                                     AND      timestamp_utc >= NOW() - INTERVAL '12 days'
                     
                              ) as window_of_state_changes    
         ),
 
         bad_states AS (
-                        select device_id, to_hex(st) as state, count(st) as state_count
+                        select device_id, to_hex(st) as state, count(st) as state_count, min(timestamp_utc) as transition_timestamp_utc
                         from state_changes
                         where st BETWEEN x'7000'::int AND x'7FFF'::int 
                         group by device_id, st
           )
-
+  
 
       SELECT * FROM  (
         SELECT   device_id,
                  host_rcpn, 
-                 'DEVICE_IN_FAULT_STATE' as alert_type,
+                 'DEVICE_IN_ERROR_STATE' as alert_type,
                  timestamp_utc as last_heard_timestamp_utc,
-                 to_hex(st) as latest_state_code
+                 to_hex(st) as latest_state
           
         FROM     status.device_shadow 
         WHERE device_id in (select distinct device_id from bad_states)
-        GROUP BY device_id, host_rcpn, latest_state_code, last_heard_timestamp_utc
+        GROUP BY device_id, host_rcpn, latest_state, last_heard_timestamp_utc
       ) parent
       
+      CROSS JOIN LATERAL (
+
+        select state, transition_timestamp_utc
+        from bad_states 
+        where device_id = parent.device_id
+                  ) as transition_timestamp
+
        CROSS JOIN LATERAL (
 
                       select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num_transitions_in_window
@@ -45,6 +52,7 @@ WITH state_changes AS
                         where device_id = parent.device_id
                       ) t
                   ) as bad_state_counts
+
        CROSS JOIN LATERAL (
 
                       select json_build_object( 'history', json_agg(to_json(t))) as history

@@ -39,12 +39,12 @@ with postgres_pool.getconn() as conn:
     conn.set_session(autocommit=True) # need this line to avoid idle_in_transaction in Postgres
     
     # get all devices from shadow that are active in the last month. We can remove this filter if needed.
-    sql = "select device_id, host_rcpn from status.device_shadow {where_clause} order by timestamp_utc desc {limit};".format(where_clause="where timestamp_utc > now() - interval '1 month'",limit="")
+    sql = "select device_id, host_rcpn from status.device_shadow {where_clause} order by timestamp_utc desc {limit};".format(where_clause="where timestamp_utc > now() - interval '1 month' and device_type='PVLINK'",limit="")
     df = pd.read_sql_query(sql, conn)
 
     # chunk settings
     total_device_shadow_devices = len(df);
-    chunk_size = int(total_device_shadow_devices * 0.05) # between 2.5% and 5% should be good for batching performance
+    chunk_size = int(total_device_shadow_devices * 0.025) # between 2.5% and 5% should be good for batching performance
     print("chunk size:",chunk_size, "total devices:", total_device_shadow_devices)
 
     # split dataframe into chunk for bulk inserts
