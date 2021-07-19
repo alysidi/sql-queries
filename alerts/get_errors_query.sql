@@ -11,7 +11,7 @@ WITH state_changes AS
                                               st
                                      FROM     status.legacy_status_state_change lssc 
                                      WHERE    device_id = parent.device_id 
-                                     AND      timestamp_utc >= NOW() - INTERVAL '12 days'
+                                     AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
                     
                              ) as window_of_state_changes    
         ),
@@ -45,7 +45,7 @@ WITH state_changes AS
 
        CROSS JOIN LATERAL (
 
-                      select json_build_object('total', count(t.*), 'data', json_agg(to_json(t))) as num_transitions_in_window
+                      select json_build_object('total', count(t.*), 'transitions', json_agg(to_json(t))) as num_transitions_in_window
                       from (
                        select state, state_count
                         from bad_states
@@ -65,7 +65,7 @@ WITH state_changes AS
                         where device_id = parent.device_id
                         and timestamp_utc > now() - INTERVAL '30 minutes'
                         order by timestamp_utc desc
-                        LIMIT 200
+                        LIMIT 100
                       ) t
                   ) as history_of_state_changes
                 
