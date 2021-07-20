@@ -61,7 +61,8 @@ with postgres_pool.getconn() as conn:
 
       # get output error batch -> send on for further processing
       df2 = pd.read_sql_query(query, conn)
-      print(df2.to_json(orient='records'))
+      # print(df2)
+      # print(df2.to_json(orient='records'))
 
       print("--- %s seconds ---" % (time.time() - start_time))
 

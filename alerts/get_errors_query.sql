@@ -1,8 +1,10 @@
 WITH state_changes AS 
       ( 
                  SELECT     window_of_state_changes.*
-                 FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 --FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
                  --FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 FROM alert_chunk.pvlinks_test AS parent
+
                 CROSS JOIN lateral 
                             ( 
                                      SELECT   device_id, 
@@ -82,7 +84,7 @@ WITH state_changes AS
                         from status.legacy_status_state_change
                         where device_id = parent.device_id
                         order by timestamp_utc desc
-                        LIMIT 10
+                        LIMIT 50
                       ) t
                   ) as history_of_state_changes
                 
