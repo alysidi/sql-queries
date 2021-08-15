@@ -5,11 +5,11 @@ and date_trunc('day',timestamp_utc) = date_trunc('day',now() - INTERVAL '0 day')
 order by timestamp_utc desc;
 
 -- group errors by state code
-select device_type, st, r.state_text, count(st) from status.device_shadow d
+select device_type, st, to_hex(st), r.state_text, count(st) from status.device_shadow d
 LEFT JOIN status.rcp_state r ON d.st & x'FFF0'::int = r.state_code
 where st between x'7000'::int and x'7FFF'::int
 group by device_type, st, r.state_text
-order by count(st) desc;
+order by device_type,count(st) desc;
 
 -- get devices by specific state code
 select * from status.device_shadow where st=29440
@@ -28,15 +28,19 @@ order by time_bucket(INTERVAL '1 day', timestamp_utc) desc;
 
 -- get state change events from specific day by device
 select timestamp_utc, 
-st, to_hex(st), state_text from status.legacy_status_state_change l LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
-where device_id='00010003404E' 
-order by timestamp_utc desc limit 500;
+st, to_hex(st), state_text from status.legacy_status_state_change l 
+LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
+where device_id='000100035AE4' 
+order by timestamp_utc desc limit 50;
 
 -- get last 500 events from specific device 
 select timestamp_utc, timestamp_utc - lag(timestamp_utc) OVER (PARTITION BY device_id ORDER BY timestamp_utc) as duration,
 st, state_text from status.legacy_status l LEFT JOIN status.rcp_state r ON l.st & x'FFF0'::int = r.state_code
-where device_id='000100081DF8' 
+where device_id='000100035AE4' 
 order by timestamp_utc desc limit 500;
+
+select * from status.rcp_state
+
 
 -- current state of device
 select * from status.device_shadow d 

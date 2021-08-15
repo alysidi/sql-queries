@@ -1,28 +1,32 @@
-
 WITH state_changes AS 
       ( 
                  SELECT     window_of_state_changes.*
                  --FROM (VALUES ('0001000823F0','00010007110F'),('000100083518', '000100072FA2') ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
-                 FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks                 
-                 JOIN  
+                 FROM (VALUES {} ) AS parent(device_id, host_rcpn) -- pass in tuples from chunks
+                 --FROM alert_chunk.pvlinks_test AS parent
+
+                CROSS JOIN lateral 
                             ( 
                                      SELECT   device_id, 
                                               host_rcpn, 
-                                              extract(epoch from min(timestamp_utc) ) as transition_timestamp_utc,                                              device_type, 
-                                              to_hex(st) as device_state, 
-                                              count(st) as count
-                                     FROM     status.legacy_status_state_change 
-                                     WHERE    st between x'7000'::int and x'7FFF'::int
-                                     AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
-                                     GROUP BY device_id, 
-                                              host_rcpn, 
+                                              timestamp_utc,
                                               device_type, 
                                               st
+                                     FROM     status.legacy_status_state_change lssc 
+                                     WHERE    device_id = parent.device_id 
+                                     AND      timestamp_utc >= NOW() - INTERVAL '12 hours'
                     
-                             ) as window_of_state_changes   
-                  ON    window_of_state_changes.device_id = parent.device_id 
-        )
+                             ) as window_of_state_changes    
+        ),
 
+        bad_states AS (
+                        select device_id, to_hex(st) as device_state, count(st) as count, 
+                        extract(epoch from min(timestamp_utc) ) as transition_timestamp_utc
+                        from state_changes
+                        where st >= x'9000'::int --BETWEEN x'7000'::int AND x'7FFF'::int 
+                        group by device_id, st
+          )
+  
 
       SELECT * FROM  (
         SELECT   device_id,
@@ -33,17 +37,23 @@ WITH state_changes AS
                  to_hex(st) as latest_device_state
           
         FROM     status.device_shadow 
-        WHERE device_id in (select distinct device_id from state_changes)
+        WHERE device_id in (select distinct device_id from bad_states)
         GROUP BY device_id, host_rcpn, device_type, latest_device_state, latest_timestamp_utc
       ) parent
       
-    
+      CROSS JOIN LATERAL (
+
+        select device_state, transition_timestamp_utc
+        from bad_states 
+        where device_id = parent.device_id
+                  ) as transition_timestamp
+
        CROSS JOIN LATERAL (
 
                       select json_agg(to_json(t)) as num_of_errors_in_window
                       from (
                        select device_state as error_device_state, count
-                        from state_changes
+                        from bad_states
                         where device_id = parent.device_id
                       ) t
                   ) as bad_state_counts

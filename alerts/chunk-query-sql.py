@@ -24,14 +24,17 @@ def split(dfm, chunk_size):
     indices = index_marks(dfm.shape[0], chunk_size)
     return np.split(dfm, indices)
 
+connection = {
+    "user":username,
+    "password":password,
+    "host":"timescaledb-stg.neur.io",
+    "port":"12949",
+    "database":"defaultdb"
+}
 
 
 # use connection pool for single threaded apps. replace credentials with Timescale user pool settings
-postgres_pool = pool.SimpleConnectionPool(1, 5, user=username,
-                                                         password=password,
-                                                         host="timescaledb-stg.neur.io",
-                                                         port="12949",
-                                                         database="defaultdb")
+postgres_pool = pool.SimpleConnectionPool(1, 5, **connection)
 
 
 with postgres_pool.getconn() as conn:
@@ -39,12 +42,12 @@ with postgres_pool.getconn() as conn:
     conn.set_session(autocommit=True) # need this line to avoid idle_in_transaction in Postgres
     
     # get all devices from shadow that are active in the last month. We can remove this filter if needed.
-    sql = "select device_id, host_rcpn from status.device_shadow {where_clause} order by timestamp_utc desc {limit};".format(where_clause="where timestamp_utc > now() - interval '1 month' and device_type='PVLINK'",limit="")
+    sql = "select device_id, host_rcpn from status.device_shadow {where_clause} order by timestamp_utc desc {limit};".format(where_clause="where timestamp_utc > now() - interval '1 month'",limit="")
     df = pd.read_sql_query(sql, conn)
 
     # chunk settings
     total_device_shadow_devices = len(df);
-    chunk_size = int(total_device_shadow_devices * 0.025) # between 2.5% and 5% should be good for batching performance
+    chunk_size = int(total_device_shadow_devices * 0.25) # between 2.5% and 5% should be good for batching performance
     print("chunk size:",chunk_size, "total devices:", total_device_shadow_devices)
 
     # split dataframe into chunk for bulk inserts
